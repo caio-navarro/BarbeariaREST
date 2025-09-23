@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BarbLine</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">BarbLine</div>
+            <div class="nav-buttons">
+                <a href="index.html" class="btn btn-outline">Início</a>
+                <a href="login.html" class="btn btn-primary">Entrar</a>
+                <a href="cadastro.html" class="btn btn-secondary">Cadastrar</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>Entrar na BarbLine</h2>
+
+        <!-- Abas para escolher tipo -->
+        <div class="role-tabs">
+            <div class="role-tab active" data-role="cliente">Sou Cliente</div>
+            <div class="role-tab" data-role="barbeiro">Sou Profissional</div>
+        </div>
+
+        <form id="login-form" class="auth-form">
+            <input type="hidden" id="login-role" value="cliente">
+            <div class="form-group">
+                <label for="login-cpf">CPF</label>
+                <input type="text" id="login-cpf" required>
+            </div>
+            <div class="form-group">
+                <label for="login-senha">Senha</label>
+                <input type="password" id="login-senha" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">
+                Entrar
+            </button>
+        </form>
+        <div class="auth-footer">
+            <p>Não tem uma conta?
+                <a href="cadastro.html">Cadastre-se</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="loginJs.js"></script>
+</body>
+</html>
