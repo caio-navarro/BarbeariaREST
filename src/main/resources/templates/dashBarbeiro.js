@@ -43,7 +43,7 @@ function contarAgendamentos() {
 function contarClientes() {
     const numeroClientes = document.getElementById("clientes-ativos")
 
-    fetch("http://localhost:8080/cliente/listar")
+    fetch("http://localhost:8080/usuario/listar/clientes")
         .then(res => {
             if (!res.ok) throw new Error("Erro ao buscar clientes.")
             return res.json();
@@ -121,8 +121,8 @@ async function concluirAgendamento(idAgendamento) {
     faturamentoMensal(idBarbeiro);
 }
 
-async function cancelarAgendamento(idAgendamento){
-try {
+async function cancelarAgendamento(idAgendamento) {
+    try {
         // Passo 1: buscar o agendamento atual
         const getResponse = await fetch(`http://localhost:8080/agendamento/buscarPorId/${idAgendamento}`);
         if (!getResponse.ok) {

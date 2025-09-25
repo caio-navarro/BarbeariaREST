@@ -54,6 +54,7 @@ document.getElementById("registro-form").addEventListener("submit", function (ev
     const telefone = document.getElementById("reg-tel").value.replace(/\D/g, '');
     const senha = document.getElementById("reg-senha").value;
     const confirmarSenha = document.getElementById("confirmar-senha").value;
+    const role = "cliente";
 
     if(telefone.length < 11){
         alert("O telefone precisa ter 11 dígitos!");
@@ -69,10 +70,11 @@ document.getElementById("registro-form").addEventListener("submit", function (ev
         nome,
         cpf,
         telefone,
-        senha
+        senha,
+        role
     };
 
-    fetch("http://localhost:8080/cliente/cadastrar", {
+    fetch("http://localhost:8080/usuario/cadastrar", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

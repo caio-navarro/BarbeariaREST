@@ -42,7 +42,7 @@ if (btnLogout) {
 
 async function carregarBarbeiros() {
     try {
-        const response = await fetch('http://localhost:8080/barbeiro/listar');
+        const response = await fetch('http://localhost:8080/usuario/listar/barbeiros');
         if (!response.ok) throw new Error('Erro ao buscar barbeiros');
 
         const barbeiros = await response.json();
@@ -52,7 +52,7 @@ async function carregarBarbeiros() {
 
         barbeiros.forEach(barbeiro => {
             const option = document.createElement('option');
-            option.value = barbeiro.idBarbeiro;
+            option.value = barbeiro.idUsuario;
             option.textContent = barbeiro.nome;
             selectBarbeiro.appendChild(option);
         });

@@ -47,9 +47,9 @@ document.getElementById("login-form").addEventListener("submit", function (event
 
     let url = "";
     if (role === "cliente") {
-        url = "http://localhost:8080/cliente/login";
+        url = "http://localhost:8080/login/cliente";
     } else {
-        url = "http://localhost:8080/barbeiro/login";
+        url = "http://localhost:8080/login/barbeiro";
     }
 
     fetch(url, {
@@ -67,21 +67,21 @@ document.getElementById("login-form").addEventListener("submit", function (event
             }
             return response.json();
         })
-        .then(cliente => {
-            const idCliente = cliente.idCliente;
+        .then(usuario => {
+            const idUsuario = usuario.idUsuario;
 
             // Salvar informações no localStorage
             if (role === "cliente") {
-                localStorage.setItem('idCliente', cliente.idCliente);
-                localStorage.setItem('nomeCliente', cliente.nome);
-                localStorage.setItem('telCliente', cliente.telefone);
-                localStorage.setItem('cpfCliente', cliente.cpf);
+                localStorage.setItem('idCliente', usuario.idUsuario);
+                localStorage.setItem('nomeCliente', usuario.nome);
+                localStorage.setItem('telCliente', usuario.telefone);
+                localStorage.setItem('cpfCliente', usuario.cpf);
                 window.location.href = "dashboard-cliente.html";
             } else {
-                localStorage.setItem('idBarbeiro', cliente.idBarbeiro);
-                localStorage.setItem('nomeBarbeiro', cliente.nome);
-                localStorage.setItem('telBarbeiro', cliente.telefone);
-                localStorage.setItem('cpfBarbeiro', cliente.cpf);
+                localStorage.setItem('idBarbeiro', usuario.idUsuario);
+                localStorage.setItem('nomeBarbeiro', usuario.nome);
+                localStorage.setItem('telBarbeiro', usuario.telefone);
+                localStorage.setItem('cpfBarbeiro', usuario.cpf);
                 window.location.href = "dashboard-barbeiro.html";
             }
         })

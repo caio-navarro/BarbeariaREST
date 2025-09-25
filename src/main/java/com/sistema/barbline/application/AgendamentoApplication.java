@@ -1,19 +1,12 @@
 package com.sistema.barbline.application;
 
 import com.sistema.barbline.entities.Agendamento;
-import com.sistema.barbline.entities.Barbeiro;
-import com.sistema.barbline.entities.Cliente;
+import com.sistema.barbline.entities.Usuario;
 import com.sistema.barbline.repositories.AgendamentoRepository;
-import com.sistema.barbline.repositories.BarbeiroRepository;
-import com.sistema.barbline.repositories.ClienteRepository;
+import com.sistema.barbline.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -30,100 +23,44 @@ public class AgendamentoApplication {
     private AgendamentoRepository agendamentoRepository;
 
     @Autowired
-    private BarbeiroRepository barbeiroRepository;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private MensagemApplication mensagem;
 
-    public List listar() {
+    public List<Agendamento> listar() {
         return agendamentoRepository.findAll();
     }
 
-    public void enviarMensagemAgendamentoConfirmadoCliente(Agendamento agendamento) {
-        String url = "http://localhost:3001/agendamento/confirmacao";
-
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<Agendamento> request = new HttpEntity<>(agendamento, headers);
-
-        String resposta = restTemplate.postForObject(url, request, String.class);
-        System.out.println("Resposta do Node.js: " + resposta);
-    }
-
-    public void enviarMensagemAgendamentoConfirmadoBarbeiro(Agendamento agendamento) {
-        String url = "http://localhost:3001/agendamento/confirmacao/barbeiro";
-
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<Agendamento> request = new HttpEntity<>(agendamento, headers);
-
-        String resposta = restTemplate.postForObject(url, request, String.class);
-        System.out.println("Resposta do Node.js: " + resposta);
-    }
-
-    public void enviarMensagemAgendamentoCanceladoCliente(Agendamento agendamento) {
-        String url = "http://localhost:3001/agendamento/cancelamento/cliente";
-
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<Agendamento> request = new HttpEntity<>(agendamento, headers);
-
-        String resposta = restTemplate.postForObject(url, request, String.class);
-        System.out.println("Resposta do Node.js: " + resposta);
-    }
-
-    public void enviarMensagemAgendamentoCanceladoBarbeiro(Agendamento agendamento) {
-        String url = "http://localhost:3001/agendamento/cancelamento/barbeiro";
-
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<Agendamento> request = new HttpEntity<>(agendamento, headers);
-
-        String resposta = restTemplate.postForObject(url, request, String.class);
-        System.out.println("Resposta do Node.js: " + resposta);
-    }
-
     public Agendamento cadastrar(Agendamento agendamento) {
-        Barbeiro barbeiro = barbeiroRepository.findById(agendamento.getIdBarbeiro())
+        Usuario barbeiro = usuarioRepository.findById(agendamento.getIdBarbeiro())
+                .filter(u -> "barbeiro".equalsIgnoreCase(u.getRole()))
                 .orElseThrow(() -> new RuntimeException("Barbeiro não encontrado"));
 
         agendamento.setNomeBarbeiro(barbeiro.getNome());
 
-        Cliente cliente = clienteRepository.findById(agendamento.getIdCliente())
+        Usuario cliente = usuarioRepository.findById(agendamento.getIdCliente())
+                .filter(u -> "cliente".equalsIgnoreCase(u.getRole()))
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
 
         agendamento.setNomeCliente(cliente.getNome());
         agendamento.setNumeroWhatsappCliente(cliente.getTelefone());
         agendamento.setNumeroWhatsappBarbeiro(barbeiro.getTelefone());
 
-        enviarMensagemAgendamentoConfirmadoCliente(agendamento);
-        enviarMensagemAgendamentoConfirmadoBarbeiro(agendamento);
+        mensagem.enviarMensagemAgendamentoConfirmadoCliente(agendamento);
+        mensagem.enviarMensagemAgendamentoConfirmadoBarbeiro(agendamento);
         return agendamentoRepository.save(agendamento);
     }
 
-    public ResponseEntity<?> cancelarAgendamento(String idAgendamento) {
-        try {
-            Agendamento agendamento = agendamentoRepository.findById(idAgendamento)
-                    .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+    public Agendamento cancelarAgendamento(String idAgendamento) {
+        Agendamento agendamento = agendamentoRepository.findById(idAgendamento)
+                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
 
-            agendamento.setStatus("cancelado");
-            enviarMensagemAgendamentoCanceladoCliente(agendamento);
-            enviarMensagemAgendamentoCanceladoBarbeiro(agendamento);
+        agendamento.setStatus("cancelado");
+        mensagem.enviarMensagemAgendamentoCanceladoCliente(agendamento);
+        mensagem.enviarMensagemAgendamentoCanceladoBarbeiro(agendamento);
 
-            agendamentoRepository.save(agendamento);
-            return ResponseEntity.ok("Agendamento cancelado com sucesso");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cancelar agendamento");
-        }
+        return agendamentoRepository.save(agendamento);
     }
 
     public Optional<Agendamento> buscarPorId(String id) {
@@ -142,7 +79,6 @@ public class AgendamentoApplication {
             "08:00", "09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00");
 
     public List<String> getHorariosDisponiveis(String idBarbeiro, String data) {
-
         List<Agendamento> agendamentos = agendamentoRepository.findByIdBarbeiroAndData(idBarbeiro, data);
 
         List<String> horariosOcupados = agendamentos.stream()
