@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Cliente - BarbLine</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">BarbLine</div>
+            <div class="nav-buttons">
+                <button onclick="logout()" class="btn btn-outline">Sair</button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="dashboard-header">
+</div>
+
+<div id="dashboard" class="container">
+    <div class="dashboard-content">
+        <div class="welcome-card">
+            <h3>Bem-vindo, <span id="nome-cliente">Cliente</span>!</h3>
+            <p>Gerencie seus agendamentos e histórico</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-section">
+                <h3>Agendar Novo Corte</h3>
+                <form id="form-agendamento" class="booking-form">
+                    <div class="form-group">
+                        <label for="service-select">Serviço</label>
+                        <select id="selecao-servico" required>
+                            <option value="">Selecione um serviço</option>
+                            <option value="Corte">Corte Tradicional - R$ 35,00</option>
+                            <option value="Barba">Barba & Bigode - R$ 25,00</option>
+                            <option value="Completo">Pacote Completo - R$ 55,00</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="profissional-select">Profissional</label>
+                        <select id="selecao-barbeiro" disabled>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="booking-date">Data</label>
+                            <input type="date" id="selecao-data" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="booking-time">Horário</label>
+                            <select id="selecao-hora" disabled>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        Agendar
+                    </button>
+                </form>
+            </div>
+
+            <div class="dashboard-section">
+                <h3>Próximos Agendamentos</h3>
+                <div id="client-bookings" class="bookings-list">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="dashCliente.js"></script>
+</body>
+</html>
