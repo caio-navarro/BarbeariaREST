@@ -46,7 +46,7 @@ Na primeira vez que rodar o projeto, execute o script de geração de chaves:
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/seu-projeto.git
+git clone git clone https://github.com/caio-navarro/BarbeariaREST.git
 cd seu-projeto
 ```
 
@@ -93,3 +93,4 @@ mvn spring-boot:run
 ## Suporte
 
 Para dúvidas ou problemas, abra uma issue no GitHub ou entre em contato comigo.
+
