@@ -4,6 +4,7 @@ import com.sistema.barbline.entities.Usuario;
 import com.sistema.barbline.facade.UsuarioFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,7 +43,9 @@ public class UsuarioController {
     }
 
     @GetMapping("/listar/clientes")
+    @PreAuthorize("hasAuthority('BARBEIRO')")
     public List<Usuario> listarClientes() {
         return usuarioFacade.listarClientes();
     }
 }
+

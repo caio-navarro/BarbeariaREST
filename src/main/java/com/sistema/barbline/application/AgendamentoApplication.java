@@ -6,6 +6,7 @@ import com.sistema.barbline.repositories.AgendamentoRepository;
 import com.sistema.barbline.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -52,17 +53,6 @@ public class AgendamentoApplication {
         return agendamentoRepository.save(agendamento);
     }
 
-    public Agendamento cancelarAgendamento(String idAgendamento) {
-        Agendamento agendamento = agendamentoRepository.findById(idAgendamento)
-                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
-
-        agendamento.setStatus("cancelado");
-        mensagem.enviarMensagemAgendamentoCanceladoCliente(agendamento);
-        mensagem.enviarMensagemAgendamentoCanceladoBarbeiro(agendamento);
-
-        return agendamentoRepository.save(agendamento);
-    }
-
     public Optional<Agendamento> buscarPorId(String id) {
         return agendamentoRepository.findById(id);
     }
@@ -92,12 +82,28 @@ public class AgendamentoApplication {
                 .collect(Collectors.toList());
     }
 
-    public ResponseEntity<List<Agendamento>> listarAgendamentosDoCliente(String idCliente) {
+    public List<Agendamento> listarAgendamentosDoCliente(String idCliente) {
         List<Agendamento> agendamentos = agendamentoRepository.findByIdCliente(idCliente);
         if (agendamentos.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return null;
         }
-        return ResponseEntity.ok(agendamentos);
+        return agendamentos;
+    }
+
+    public Agendamento cancelarAgendamento(String idAgendamento) {
+        Agendamento agendamento = agendamentoRepository.findById(idAgendamento)
+                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+
+        agendamento.setStatus("cancelado");
+        mensagem.enviarMensagemAgendamentoCanceladoCliente(agendamento);
+        mensagem.enviarMensagemAgendamentoCanceladoBarbeiro(agendamento);
+
+        return agendamentoRepository.save(agendamento);
+    }
+
+    public List<Agendamento> listarMeusAgendamentos(Authentication authentication) {
+        String idCliente = authentication.getName();
+        return this.listarAgendamentosDoCliente(idCliente);
     }
 
     public List agendamentosBarbeiro(String idBarbeiro) {

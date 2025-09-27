@@ -5,6 +5,8 @@ import com.sistema.barbline.entities.Agendamento;
 import com.sistema.barbline.facade.AgendamentoFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +20,7 @@ public class AgendamentoController {
     private AgendamentoFacade agendamentoFacade;
 
     @GetMapping("/listar")
+    @PreAuthorize("hasAuthority('BARBEIRO')")
     public List listar() {
         return agendamentoFacade.listar();
     }
@@ -48,9 +51,16 @@ public class AgendamentoController {
     }
 
     @GetMapping("/cliente/{idCliente}")
-    public ResponseEntity<List<Agendamento>> listarAgendamentosDoCliente(@PathVariable String idCliente) {
+    public List<Agendamento> listarAgendamentosDoCliente(@PathVariable String idCliente) {
         return agendamentoFacade.listarAgendamentosDoCliente(idCliente);
     }
+
+    @GetMapping("/cliente/meus-agendamentos")
+    public List<Agendamento> listarMeusAgendamentos(Authentication authentication) {
+        String idCliente = authentication.getName();
+        return agendamentoFacade.listarAgendamentosDoCliente(idCliente);
+    }
+
 
     @GetMapping("/{idBarbeiro}")
     public List agendamentosBarbeiro(@PathVariable String idBarbeiro) {
@@ -58,6 +68,7 @@ public class AgendamentoController {
     }
 
     @GetMapping("/{status}/{idBarbeiro}")
+    @PreAuthorize("hasAuthority('BARBEIRO')")
     public List agendamentosFinalizadosBarbeiro(@PathVariable String status, @PathVariable String idBarbeiro) {
         return agendamentoFacade.agendamentosFinalizadosBarbeiro(status, idBarbeiro);
     }
