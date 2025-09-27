@@ -38,12 +38,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers(HttpMethod.POST, "/token/login").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/usuario/cadastrar").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/agendamento/cadastrar").permitAll()
-                    .requestMatchers(HttpMethod.DELETE, "/agendamento/excluir/**").denyAll()
-                    .requestMatchers(HttpMethod.DELETE, "/usuario/excluir/**").denyAll()
-                    .anyRequest().authenticated())
+                .requestMatchers(HttpMethod.POST, "/token/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/usuario/cadastrar").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/usuario/atualizar").permitAll()
+                .requestMatchers(HttpMethod.POST, "/agendamento/cadastrar").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/agendamento/excluir/**").denyAll()
+                .requestMatchers(HttpMethod.DELETE, "/usuario/excluir/**").denyAll()
+                .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
