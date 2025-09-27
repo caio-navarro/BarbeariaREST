@@ -35,13 +35,13 @@ public class AgendamentoApplication {
 
     public Agendamento cadastrar(Agendamento agendamento) {
         Usuario barbeiro = usuarioRepository.findById(agendamento.getIdBarbeiro())
-                .filter(u -> "barbeiro".equalsIgnoreCase(u.getRole()))
+                .filter(u -> "ROLE_BARBEIRO".equalsIgnoreCase(u.getRole()))
                 .orElseThrow(() -> new RuntimeException("Barbeiro não encontrado"));
 
         agendamento.setNomeBarbeiro(barbeiro.getNome());
 
         Usuario cliente = usuarioRepository.findById(agendamento.getIdCliente())
-                .filter(u -> "cliente".equalsIgnoreCase(u.getRole()))
+                .filter(u -> "ROLE_CLIENTE".equalsIgnoreCase(u.getRole()))
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
 
         agendamento.setNomeCliente(cliente.getNome());
