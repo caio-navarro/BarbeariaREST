@@ -29,5 +29,11 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+# Ignorar chaves de autenticação
+src/main/resources/private.pem
+src/main/resources/private.pem.pub
+src/main/resources/private_pkcs8.pem
+src/main/resources/public.pem
+
 ### VS Code ###
 .vscode/

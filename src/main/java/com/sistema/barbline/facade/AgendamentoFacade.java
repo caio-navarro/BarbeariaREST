@@ -5,6 +5,7 @@ import com.sistema.barbline.entities.Agendamento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
@@ -19,28 +20,32 @@ public class AgendamentoFacade {
         return agendamentoApplication.listar();
     }
 
-    public ResponseEntity<?> cadastrar(Agendamento agendamentoEntity){
-        try{
+    public ResponseEntity<?> cadastrar(Agendamento agendamentoEntity) {
+        try {
             Agendamento agendamento = agendamentoApplication.cadastrar(agendamentoEntity);
             return ResponseEntity.ok(agendamento);
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Erro no agendamento: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro inesperado: " + e.getMessage());
         }
     }
 
-    public ResponseEntity<?> cancelarAgendamento(String idAgendamento){
-        try{
+    public ResponseEntity<?> cancelarAgendamento(String idAgendamento) {
+        try {
             Agendamento agendamento = agendamentoApplication.cancelarAgendamento(idAgendamento);
             return ResponseEntity.ok(agendamento);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        }catch(Exception e ){
+        } catch (Exception e) {
             System.out.println("Erro ao cancelar agendamento: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro inesperado: " + e.getMessage());
         }
+    }
+
+    public List<Agendamento> listarAgendamentosDoCliente(Authentication authentication) {
+        return agendamentoApplication.listarAgendamentosDoCliente(authentication.getName());
     }
 
     public Optional<Agendamento> buscarPorId(String id) {
@@ -59,7 +64,7 @@ public class AgendamentoFacade {
         return agendamentoApplication.getHorariosDisponiveis(idBarbeiro, data);
     }
 
-    public ResponseEntity<List<Agendamento>> listarAgendamentosDoCliente(String idCliente) {
+    public List<Agendamento> listarAgendamentosDoCliente(String idCliente) {
         return agendamentoApplication.listarAgendamentosDoCliente(idCliente);
     }
 
